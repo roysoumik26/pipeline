@@ -1,0 +1,31 @@
+pipeline{
+    agent none
+    stages{
+        stage('GitClone'){
+            agent any
+            steps{
+              git credentialsId: 'xxx', url: 'https://gitlab.com/xxx/gameoflife.git'  
+            }
+            
+        }
+        stage('MavenComplile'){
+            agent any
+            steps{
+                sh 'mvn compile'
+            }
+        }
+        stage('MavenTest'){
+            agent any
+            steps{
+                sh 'mvn test'
+            }
+        }
+        stage('MavenPackage'){
+            agent {label 'linuxslave1'}
+            steps{
+                git credentialsId: 'xxx', url: 'https://gitlab.com/xxx/gameoflife.git'
+                sh 'mvn package'
+            }
+        }
+    }
+}
